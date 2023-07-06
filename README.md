@@ -664,3 +664,41 @@ specific requirements.
 if any, to sign a "copyright disclaimer" for the program, if necessary.
 For more information on this, and how to apply and follow the GNU AGPL, see
 <https://www.gnu.org/licenses/>.
+
+
+# Rendersock Installation
+
+# Custom ROM / Kernel Bootleg (Armbian, PI)
+
+* Copy /dev/sdb1 and /dev/sdb
+* Create new folder named "render-soc" in /boot/
+* Copy SDB files to /boot/render-soc/
+* Create New Point to SoC Table in /mnt/soc/rendersock
+* Copy paste SDB1 and SDB2 (/dev/sdb2) in /mnt/soc/rendersock
+* Copy paste .deb Armbian Image File in /mnt/soc/rendersock
+* Shell "sudo mount -o loop /mnt/soc/rendersock/armbian-install_rendersock.deb"
+* Parse SDB1 from /boot/render-soc/ with data from /mnt/soc/rendersock/armbian-install_rendersock.deb
+* Copy paste DFX Mirror File (mirror.86dif) to /mnt/soc/rendersock/
+* NANO into /mnt/soc/rendersock/mirror.86dif/
+* Paste the following code into MIRROR File:
+ANDROID_SDK(WRITE_EXTERNAL_STORAGE(READ_EXTERNAL_STORAGE(/boot/kernel/, /boot/)))
+ANDROID_SDK(WRITE_EXTERNAL_STORAGET(READ_EXTERNAL_STORAGE(boot)))
+ANDROID_SDK(WRITE_EXTERNAL_STORAGE(BOOT), WRITE_EXTERNAL_STORAGE(/mnt/soc/rendersock))
+* Save Buffer of MIRROR File
+* Reboot PC
+* Select ARM-MIRROR from UEFI / Boot Manager
+* Wait for shell to appear
+* Port to SDB1 (ANDROID_SDK(WRITE_EXTERNAL_STORAGE(sdb1))) and press ENTER
+* Select GBDP Port
+* Boot into Rendersock Chip with ANDROID_SDK(WRITE_EXTERNAL_STORAGE(/boot/))
+
+# Installation on Ubuntu (GRUB2 Install)
+* Copy the .CONF File (and-mirror_sdk.conf) into /boot/grub/ and /etc/
+* Boot into GRUB2
+* Run "sudo mount -o loop and-mirror_sdk.conf"
+* Run "ANDROID_SDK(WRITE_EXTERNAL_STORAGE(DebKernel))" in AND Mirror Shell
+* Run Bluetooth Driver Scanning with ANDROID_SDK(BLUETOOTH_CONNECT()): Use ANDROID_SDK(BLUETOOTH_CONNECT(SDB1)) to map SDB1 Kernel Map File and connect to Installation Proxy:
+; Run ANDROID_SDK(BLUETOOTH_ADVERTISE(READ_EXTERNAL_STORAGE(/mnt/soc/rendersock/)))
+; Run ANDROID_SDK(BLUETOOTH_ADVERTISE(WRITE_EXTERNAL_STORAGE(/KERNEL/MAP/)))
+; Run ANDROID_SDK(NEARBY_WIFI_DEVICES(nul)) to disconnect from BlueTooth Driver and continue to AND Mirror Shell
+* MAP / BOOT into your Ubuntu
